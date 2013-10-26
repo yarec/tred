@@ -39,7 +39,9 @@ Links
  * [The Scheme Programming Language Fourth Edition R. Kent Dybvig](http://www.scheme.com/tspl4/)
 
 Author
-[softidy](http://about.me/softidy) http://softidy.com
+----
+[softidy](http://about.me/softidy) 
+http://softidy.com
 
 License
 ----
