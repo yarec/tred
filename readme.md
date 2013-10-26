@@ -40,7 +40,7 @@ Links
 
 Author
 ----
-[softidy](http://about.me/softidy) 
+[softidy](http://about.me/softidy)  
 http://softidy.com
 
 License
