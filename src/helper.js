@@ -84,7 +84,7 @@ function showRes(res) {
 
 function printLog(s,no) {
     var l = no?'':"\n";
-    console.log(s + l);
+    process.stdout.write(s);
 
     /*
   document.getElementById('log').value += s + (no?'':"\n");
@@ -122,46 +122,6 @@ function key2(srcElement) {
   var re = /(\n|\r\n){2}$/;
   if( !re.test(buf1) && re.test(buf2) ) {
     clickEval(); buf1 = buf2;
-  }
-}
-
-function checkEdit(srcElement) {
-  var e = srcElement, p = new Parser(e.value);
-  var o = p.getObject();
-  if( o instanceof Pair ) {
-    e.parentElement.innerHTML = o.Html();
-  }
-  while( (m = p.getObject()) != null ) {
-    var td = e.parentElement,
-        tr = td.parentElement,
-        tb = tr.parentElement,
-        r0 = tb.rows[0];
-    if( tb.rows.length == 1 ) { // horizontal
-      var cell = tr.insertCell(td.cellIndex+1);
-    } else if( r0.cells.length == 3 ) { // vertical
-      r0.cells[0].rowSpan++;
-      r0.cells[2].rowSpan++;
-      var row = tb.insertRow(tr.rowIndex+1),
-          cell = row.insertCell(0);
-    } else {
-      alert('Error!'); return;
-    }
-    cell.innerHTML = m.Html();
-    cell.onclick = editCell;
-    e.value = o.Str();
-  }
-}
-
-function editCell(event) {
-  var i, o = event.srcElement;
-  if( o.children.length == 0 && // 2Do: merge subtrees...
-      ! /^(\(|\)|)$/.test( o.innerHTML ) ) {
-    var inp = document.createElement('input');
-    inp.value = o.innerHTML;
-    inp.onkeyup = function() { checkEdit(inp) };
-    o.innerHTML = '';
-    o.appendChild(inp);
-    inp.focus();
   }
 }
 

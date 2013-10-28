@@ -308,7 +308,7 @@ TopEnv['error'] = function(list) { throw new Ex(list.car); }
 TopEnv['trace'] = function(list) { trace = list.car.valueOf(); }
 TopEnv['read'] = function(list) { return TopParser.getObject(); }
 TopEnv['write'] = function(list) { printLog(list.car.Str(),true); }
-TopEnv['newline'] = function(list) { printLog(''); }
+TopEnv['newline'] = function(list) { printLog('\n'); }
 TopEnv['write-char'] =
 TopEnv['display'] = function(list) {
   printLog( (list.car instanceof Char) ? list.car.value :
