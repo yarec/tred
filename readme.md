@@ -1,4 +1,4 @@
-tred
+Tred
 =======
 Tred is a implementation of r5rs scheme similar to scheme2js. 'tred' is the abbreviation of 'treasured sword'. This project is for the purposes of study of compiler only. Original code is based on [jsscheme](http://bluishcoder.co.nz/jsscheme/). 
 
@@ -22,6 +22,9 @@ Feathers
 
 Quick Start
 ----
+ [install node first](http://softidy.com/2013/7/26/Non-root-node-installation.html), and stdio module  
+ make and test
+
     $ make
     $ make test
     $ ./tred t/test.cc.ss

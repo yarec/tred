@@ -32,28 +32,56 @@ function eval_scm_file(file_){
     return eval_scm(code);
 }
 
-var argv = process.argv.splice(2);
-if(argv.length==0){
-    console.log('filename must given!');
+function ready(f){
+    fs.exists('',f);
+}
+
+var stdio = require('stdio');
+function setopts(ops){
+    if(ops.trace)      { trace = true; }
+    if(ops.jit)        { jit = true; }
+    if(ops.showinput)  { sIn= true; }
+    if(ops.showoutput) { sRes = true; }
+}
+var ops = stdio.getopt({
+    'trace'      : {key : 't', description : 'debug options'},
+    'jit'        : {key : 'j', description : 'enable jit'},
+    'exp'        : {key : 'e', description : 'exec expression', args : 1 },
+    'showinput'  : {key : 'i', description : 'show input'},
+    'showoutput' : {key : 'o', description : 'show output'},
+    'help'       : {key : 'h', description : 'show this help info'}
+},'<File>');
+
+if(ops.args==undefined){
+    if(ops.exp){
+        ready(function(){
+            setopts(ops);
+            ret = eval_scm(ops.exp);
+        });
+    }
+    else{
+        ops.printHelp();
+    }
 }
 else{
-    if(argv[0]=='compile-lib'){
-        fs.exists(argv[0],function(exists){
+    if(ops.args[0]=='compile-lib'){
+        ready(function(){
             libcode = fs.readFileSync('src/lib.scm', 'utf-8');
             trace = false;
             eval_scm('(compile-lib)');
         });
     }
     else {
-        fs.exists(argv[0],function(exists){
+        fs.exists(ops.args[0],function(exists){
             if(exists){
-                ret = eval_scm_file(argv[0]);
+                setopts(ops);
+                ret = eval_scm_file(ops.args[0]);
                 //if(ret.constructor=='Boolean'&& ret && (ret.constructor=='Object' && ret.car!=undefined)){
                 //console.log(ret);
                 //}
             }
             else{
-                console.log(argv['0']+' : not found!');
+                console.log(ops.args['0']+' : not found!');
             }
         });
     }

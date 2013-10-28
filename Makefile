@@ -12,6 +12,7 @@ SRC_= main.js \
 SRC=$(foreach i, ${SRC_}, ${SDIR}/${i})
 
 # Main Target
+app: tred
 test: tred
 	@./tred t/r5rs_pitfall.scm
 bootstrap: clean ${BOOTSTRAP}
