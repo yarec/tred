@@ -10,30 +10,20 @@ SRC_= main.js \
 	  eval.js \
 	  topenv.js
 SRC=$(foreach i, ${SRC_}, ${SDIR}/${i})
+SSRC=${SDIR}/lib.scm
 
 # Main Target
 app: tred
-release: tred
-	sed -e 's@function getSymbol(@function a(@g' tred > tred-min
-	sed -i 's@getSymbol(@a(@g' tred-min
-	#sed -i 's@function Pair@function P@g' tred-min
-	#sed -i 's@new Pair@P@g' tred-min
-	sed -i 's@Pair@P@g' tred-min
-	sed -i 's@theNil@N@g' tred-min
-	sed -i 's@TopEnv@T@g' tred-min
-	sed -i 's@parentEnv@PE@g' tred-min
-	sed -i 's@compile@c@g' tred-min
-	sed -i 's@Apply@A@g' tred-min
-	sed -i 's@Lambda@L@g' tred-min
-	sed -i 's@list@l@g' tred-min
-	chmod +x tred-min
 test: tred
+	@./tred t/r5rs_pitfall.scm
+test-min: tred-min
 	@./tred-min t/r5rs_pitfall.scm
 bootstrap: clean ${BOOTSTRAP}
 lib: clean ${LIB}
 clean:
 	@rm -f ${ODIR}/*
 	@rm -f tred
+	@rm -f tred-min
 
 # Target Deps
 ${BOOTSTRAP}: ${SRC} bootstrap/lib.js
@@ -44,7 +34,7 @@ ${BOOTSTRAP}: ${SRC} bootstrap/lib.js
 
 ${LIB}: ${BOOTSTRAP} ${SDIR}/lib.scm
 	@echo Building ${LIB}
-	@node ${BOOTSTRAP} compile-lib > $@
+	@node ${BOOTSTRAP} -c ${SSRC} > $@
 
 tred : ${SRC} ${LIB}
 	@echo Building tred
@@ -55,3 +45,18 @@ tred : ${SRC} ${LIB}
 	@echo '}' >> $@
 	@chmod +x $@
 
+tred-min: tred
+	@echo Building tred-min
+	@sed -e 's@function getSymbol(@function a(@g' tred > tred-min
+	@sed -i 's@getSymbol(@a(@g' tred-min
+	@#@sed -i 's@function Pair@function P@g' tred-min
+	@#@sed -i 's@new Pair@P@g' tred-min
+	@sed -i 's@Pair@P@g' tred-min
+	@sed -i 's@theNil@N@g' tred-min
+	@sed -i 's@TopEnv@T@g' tred-min
+	@sed -i 's@parentEnv@PE@g' tred-min
+	@sed -i 's@compile@c@g' tred-min
+	@sed -i 's@Apply@A@g' tred-min
+	@sed -i 's@Lambda@L@g' tred-min
+	@sed -i 's@list@l@g' tred-min
+	@chmod +x tred-min

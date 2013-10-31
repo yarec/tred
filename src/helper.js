@@ -1,6 +1,7 @@
 var trace = false;
 var jit = false;
 var sIn = false;
+var sPL = false;
 var sRes = false;
 
 function objectToString(o){
@@ -75,22 +76,12 @@ function clickEval() {
 function showRes(res) {
   if( res != null ) {
       console.log(res.Str());
-      /*
-    if( document.getElementById('out') )
-      document.getElementById('out').innerHTML = Html( res );
-      */
   }
 }
 
 function printLog(s,no) {
-    var l = no?'':"\n";
-    process.stdout.write(s);
-
-    /*
-  document.getElementById('log').value += s + (no?'':"\n");
-  if( document.getElementById('log').doScroll )
-    document.getElementById('log').doScroll();
-    */
+    var l = no?'':'\n';
+    process.stdout.write(s+l);
 }
 
 // Need to wrap alert as calling it from Scheme
