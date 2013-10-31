@@ -26,15 +26,21 @@ clean:
 	@rm -f tred-min
 
 # Target Deps
-${BOOTSTRAP}: ${SRC} bootstrap/lib.js
+${BOOTSTRAP}: ${SRC}
 	@echo Building ${BOOTSTRAP}
 	@mkdir -p ${ODIR}
-	@cat $^ > $@
+	@echo '#!/usr/bin/env node'                                   > $@
+	@cat $^                                                       >> $@
+	@echo "function init() {"                                     >> $@
+	@echo "var e=TopEnv;"                                         >> $@
+	@echo "e['call/cc']=e.get('call-with-current-continuation');" >> $@
+	@echo "}"                                                     >> $@
 	@chmod +x $@
+
 
 ${LIB}: ${BOOTSTRAP} ${SDIR}/lib.scm
 	@echo Building ${LIB}
-	@node ${BOOTSTRAP} -c ${SSRC} > $@
+	@node ${BOOTSTRAP} -e '(compile-lib)' ${SSRC} > $@
 
 tred : ${SRC} ${LIB}
 	@echo Building tred

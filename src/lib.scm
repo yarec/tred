@@ -883,7 +883,7 @@
 (define (compiled s)
   (js-invoke (get-prop s "compiled") "toString"))
 (define (compile-lib)
-  (define lib (parse (js-eval "libcode")))
+  (define lib (parse (js-eval "fs.readFileSync('src/lib.scm', 'utf-8')")))
   (define (print x) (display x)(display #\;)(newline))
   (print "var e=TopEnv")
   (define (print-compiled x) (print (compile x)))

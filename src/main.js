@@ -1,5 +1,5 @@
-var fs = require('fs');
-var vm = require('vm');
+fs = require('fs');
+vm = require('vm');
 
 function includeJS(file_) {
     var code = fs.readFileSync(file_, 'utf-8');
@@ -107,16 +107,18 @@ var ops = stdio.getopt({
     'help'          : {key : 'h', description : 'show this help info'}
 },'<File>');
 
-if(ops.args==undefined){
-    if(ops.exp){
-        ready(function(){
-            setopts(ops);
-            ret = eval_scm(ops.exp);
-        });
-    }
-    else{
-        ops.printHelp();
-    }
+if(ops.exp){
+    ready(function(){
+        setopts(ops);
+        var code = ops.exp;
+        if(ops.args!=undefined){
+            code = fs.readFileSync(ops.args[0], 'utf-8') + code;
+        }
+        ret = eval_scm(code);
+    });
+}
+else if(ops.args==undefined){
+    ops.printHelp();
 }
 else{
     fs.exists(ops.args[0],function(exists){

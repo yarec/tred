@@ -422,6 +422,7 @@ Again: while(true) {
       return res;
     }
 */
+    return '';
     throw new Ex("JIT: Apply to invalid function, maybe call/cc");
 
   } else if( f instanceof Continuation ) {
