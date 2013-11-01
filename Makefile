@@ -4,8 +4,7 @@ SDIR=src
 ODIR=out
 BOOTSTRAP=${ODIR}/bootstrap.js
 LIB=${ODIR}/lib.js
-SRC_= main.js \
-	  helper.js \
+SRC_= helper.js \
 	  classes.js \
 	  eval.js \
 	  topenv.js
@@ -15,18 +14,17 @@ SSRC=${SDIR}/lib.scm
 # Main Target
 app: tred
 test: tred
-	@./tred t/r5rs_pitfall.scm
+	@node tred t/r5rs_pitfall.scm
 test-min: tred-min
-	@./tred-min t/r5rs_pitfall.scm
+	@node tred-min t/r5rs_pitfall.scm
 bootstrap: clean ${BOOTSTRAP}
 lib: clean ${LIB}
 clean:
 	@rm -f ${ODIR}/*
-	@rm -f tred
-	@rm -f tred-min
+	@rm -f tred*
 
 # Target Deps
-${BOOTSTRAP}: ${SRC}
+${BOOTSTRAP}: ${SDIR}/main.js ${SRC}
 	@echo Building ${BOOTSTRAP}
 	@mkdir -p ${ODIR}
 	@echo '#!/usr/bin/env node'                                   > $@
@@ -42,27 +40,38 @@ ${LIB}: ${BOOTSTRAP} ${SDIR}/lib.scm
 	@echo Building ${LIB}
 	@node ${BOOTSTRAP} -e '(compile-lib)' ${SSRC} > $@
 
-tred : ${SRC} ${LIB}
-	@echo Building tred
-	@echo '#!/usr/bin/env node' > $@
-	@cat ${SRC} >> $@
+tred.js: ${SRC} ${LIB}
+	@cat ${SRC} > $@
 	@echo 'function init() {' >> $@
 	@cat ${LIB} >> $@
 	@echo '}' >> $@
+tred: tred.js
+	@echo Building tred
+	@#echo '#!/usr/bin/env node' > $@
+	@cat ${SDIR}/main.js >> $@
+	@cat $^ >> $@
 	@chmod +x $@
+release: tred-min tred-min.js
+	@echo 'release ok'
 
-tred-min: tred
-	@echo Building tred-min
-	@sed -e 's@function getSymbol(@function a(@g' tred > tred-min
-	@sed -i 's@getSymbol(@a(@g' tred-min
-	@#@sed -i 's@function Pair@function P@g' tred-min
-	@#@sed -i 's@new Pair@P@g' tred-min
-	@sed -i 's@Pair@P@g' tred-min
-	@sed -i 's@theNil@N@g' tred-min
-	@sed -i 's@TopEnv@T@g' tred-min
-	@sed -i 's@parentEnv@PE@g' tred-min
-	@sed -i 's@compile@c@g' tred-min
-	@sed -i 's@Apply@A@g' tred-min
-	@sed -i 's@Lambda@L@g' tred-min
-	@sed -i 's@list@l@g' tred-min
-	@chmod +x tred-min
+define reduce
+$(1):$(2)
+	@echo Building $(1)
+	@sed -e 's@function getSymbol(@function a(@g' $(2) > $(1)
+	@sed -i 's@getSymbol(@a(@g' $(1)
+	@#@sed -i 's@function Pair@function P@g' $(1)
+	@#@sed -i 's@new Pair@P@g' $(1)
+	@sed -i 's@Pair@P@g' $(1)
+	@sed -i 's@theNil@N@g' $(1)
+	@sed -i 's@TopEnv@T@g' $(1)
+	@sed -i 's@parentEnv@PE@g' $(1)
+	@sed -i 's@compile@c@g' $(1)
+	@sed -i 's@Apply@A@g' $(1)
+	@sed -i 's@Lambda@L@g' $(1)
+	@#sed -i 's@list@l@g' $(1)
+	@uglifyjs $(1) -o $(1)
+	@chmod +x $(1)
+endef
+
+$(eval $(call reduce, tred-min.js, tred.js))
+$(eval $(call reduce, tred-min, tred))

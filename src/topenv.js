@@ -300,15 +300,19 @@ TopEnv['function?'] = function(list) { return list.car instanceof Function; }
 TopEnv['continuation?'] = function(list) { return list.car instanceof Continuation; }
 
 TopEnv['js-eval'] = function(list) { 
-    //return eval(list.car);
-    return vm.runInThisContext(list.car);
+    if(typeof(vm)!=='undefined'){
+        return vm.runInThisContext(list.car);
+    }
+    else{
+        return eval(list.car);
+    }
 }
 TopEnv['error'] = function(list) { throw new Ex(list.car); }
 
 TopEnv['trace'] = function(list) { trace = list.car.valueOf(); }
 TopEnv['read'] = function(list) { return TopParser.getObject(); }
 TopEnv['write'] = function(list) { printLog(list.car.Str(),true); }
-TopEnv['newline'] = function(list) { printLog('\n'); }
+TopEnv['newline'] = function(list) { printLog(''); }
 TopEnv['write-char'] =
 TopEnv['display'] = function(list) {
   printLog( (list.car instanceof Char) ? list.car.value :

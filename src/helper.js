@@ -81,7 +81,15 @@ function showRes(res) {
 
 function printLog(s,no) {
     var l = no?'':'\n';
-    process.stdout.write(s+l);
+    if(typeof(gt)!=='undefined'){
+        gt.echo(s+l)
+    }
+    else if(process!=undefined){
+        process.stdout.write(s+l);
+    }
+    else{
+        console.log(s);
+    }
 }
 
 // Need to wrap alert as calling it from Scheme

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="/js/jquery.js" type="text/javascript"></script>
+    <script src="/js/tred-min.js"></script>
+    <script src="/js/jquery_plugin/jquery.mousewheel-min.js"></script>
+    <script src="/js/jquery_plugin/jquery.terminal-0.7.7.min.js"></script>
+    <link href="/js/jquery_plugin/jquery.terminal.css" rel="stylesheet"/>
+</head>
+<body>
+    <script type="text/javascript">
+        $(function(){
+            init();
+            $('body').terminal(function(command, term) {
+                gt = term;
+                var txt = command, o, res = null;
+                TopParser = new Parser( txt );
+                while( ( o = TopParser.getObject() ) != null ) {
+                    o = doEval( o );
+                    if( o != null ) res = o;
+                }
+                if(!isNil(res)){
+                    term.echo(Str(res));
+                }
+            }, {
+                greetings: "Tred Scheme 0.0.1.dev   "
+                            +"github: https://github.com/yarec/tred/   "
+                            +"online: http://softidy.com/tred/",
+                onBlur: function() {
+                    // prevent loosing focus
+                    return false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

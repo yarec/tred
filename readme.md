@@ -4,14 +4,14 @@ Tred is a implementation of r5rs scheme similar to scheme2js. 'tred' is the abbr
 
 The goals
 ----
- * Self-hosting compile
- * A broswer mode repl
+ * Self-hosting compile √
+ * A broswer mode repl √
  * A cli mode repl 
 
 
 Feathers
 ----
- * repl
+ * repl [online demo](http://softidy.com/tred/)
  * TCO
  * Continuations
  * Macros
@@ -27,11 +27,11 @@ Quick Start
 
     $ make
     $ make test
-    $ ./tred t/test.cc.ss
+    $ node tred t/test.cc.ss
 
 Todo
 ----
- * support args
+ * support args √
  * pass all r5rs_pitfall with jit
  * I/O support, load, read-char, open-input-file, etc
 
