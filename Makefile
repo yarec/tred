@@ -38,7 +38,7 @@ ${BOOTSTRAP}: ${SDIR}/main.js ${SRC}
 
 ${LIB}: ${BOOTSTRAP} ${SDIR}/lib.scm
 	@echo Building ${LIB}
-	@node ${BOOTSTRAP} -e '(compile-lib)' ${SSRC} > $@
+	@node ${BOOTSTRAP} -e '(compile-lib (get-file "src/lib.scm"))' ${SSRC} > $@
 
 tred.js: ${SRC} ${LIB}
 	@cat ${SRC} > $@

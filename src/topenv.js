@@ -311,6 +311,14 @@ TopEnv['error'] = function(list) { throw new Ex(list.car); }
 
 TopEnv['trace'] = function(list) { trace = list.car.valueOf(); }
 TopEnv['read'] = function(list) { return TopParser.getObject(); }
+TopEnv['get-file'] = function(list) {
+    if(list.car.indexOf('http://')==0){
+         return $.ajax({ url: list.car, async: false }).responseText; 
+    }
+    else{
+        return fs.readFileSync(list.car, 'utf-8');
+    }
+}
 TopEnv['write'] = function(list) { printLog(list.car.Str(),true); }
 TopEnv['newline'] = function(list) { printLog(''); }
 TopEnv['write-char'] =
