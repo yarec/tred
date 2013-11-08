@@ -28,6 +28,23 @@ Quick Start
     $ make
     $ make test
     $ node tred t/test.cc.ss
+    $ node tred -e '(compile-lib (get-file "src/lib.scm"))'
+
+ repl:
+
+    > 1
+    > "1"
+    > #\1
+    > (+ 1 2)
+    > (+ 1 2 3 4)
+    > (iota 10 1)
+    > (apply + (iota 10 1))
+    > (map (lambda (x) (+ x 1)) (iota 10 1))
+    > (map + (list 1 2 3) (list 4 5 6))
+
+ compile lib in broswer: 
+
+    > (ajax-get "http://softidy.com/tred/lib.scm" c-lib)
 
 Todo
 ----
