@@ -155,6 +155,8 @@ Parser.prototype.getObject = function() {
       return getChar('\n');
     } else if( t.toLowerCase() == '#\\space' ) {
       return getChar(' ');
+    } else if( t.toLowerCase() == '#\\tab' ) {
+      return getChar('\t');
     } else if( /^#\\.$/.test(t) ) {
       return getChar( t.charAt(2) );
     } else if( /^\"(\\(.|$)|[^\"\\])*\"?$/.test(t) ) {
@@ -174,6 +176,7 @@ Boolean.prototype.Str = function () {
 }
 
 Char.prototype.Str = function () {
+  if( this.value == '\t' ) return '#\\tab';
   if( this.value == ' ' ) return '#\\space';
   if( this.value == '\n' ) return '#\\newline';
   return '#\\'+this.value;

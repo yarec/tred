@@ -11,6 +11,11 @@
 (define exact? integer?)
 (define (inexact? x) (not (exact? x)))
 (define (random x) (floor (* (rnd) x)))
+(define (1+ x) (+ x 1))
+(define (1- x) (- x 1))
+(define add1 1+)
+(define sub1 1-)
+(define (void) #f)
 ;
 (define (char-ci=?  x y) (char=?  (char-downcase x) (char-downcase y)))
 (define (char-ci>?  x y) (char>?  (char-downcase x) (char-downcase y)))

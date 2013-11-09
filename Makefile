@@ -75,3 +75,8 @@ endef
 
 $(eval $(call reduce, tred-min.js, tred.js))
 $(eval $(call reduce, tred-min, tred))
+
+petite-test: tred
+	petite --script t/test.nano.ss > out/petite.out
+	node tred t/test.nano.ss > out/tred.out
+	diff out/petite.out out/tred.out
