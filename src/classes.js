@@ -29,6 +29,9 @@ function Char(c) {
   Chars[ this.value = c ] = this;
 }
 
+function Void() {
+}
+
 // Symbol class constructor - to distinguish it from String
 
 function Symbol(s) {
@@ -181,6 +184,9 @@ Char.prototype.Str = function () {
   if( this.value == '\n' ) return '#\\newline';
   return '#\\'+this.value;
 }
+Void.prototype.Str = function () {
+    return '#<void>';
+}
 
 Number.prototype.Str = function () {
   return this.toString();
@@ -295,6 +301,7 @@ function pairHtml() {
 
 Boolean.prototype.Html = dumbHtml;
 Char.prototype.Html = dumbHtml;
+Void.prototype.Html = dumbHtml;
 Number.prototype.Html = dumbHtml;
 Pair.prototype.Html = pairHtml;
 String.prototype.Html = dumbHtml;

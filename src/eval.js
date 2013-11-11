@@ -246,6 +246,7 @@ function continueBegin(state) {
 
 function continueIf(state) {
   state.obj = state.obj ? this.obj.car : this.obj.cdr.car;
+  if(state.obj==null) state.obj=new Void();
   state.env = this.env;
   state.cc = this.cc;
   state.ready = false;
@@ -357,6 +358,7 @@ function evalPair(state) {
 Nil.prototype.Eval = evalTrue;
 Boolean.prototype.Eval = evalTrue;
 Char.prototype.Eval = evalTrue;
+Void.prototype.Eval = evalTrue;
 Number.prototype.Eval = evalTrue;
 Pair.prototype.Eval = evalPair;
 String.prototype.Eval = evalTrue;

@@ -918,9 +918,12 @@
                 (cons (cons #t (cons #f (cons (void) (cons '() '()))))
                       (cons v1 (cons v2 write)))))))))
 
+(define no 0)
 (define (test e)
   ;(display e)
   ;(newline)
+  (set! no (1+ no))
+  (display no)
   (display "   => ")
   (display (eval e))
   (newline))

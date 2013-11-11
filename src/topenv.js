@@ -13,6 +13,9 @@ TopEnv['unquote-splicing'] = getSymbol('unquote-splicing');
 //
 // Built-in functions
 //
+TopEnv['void'] = function(){
+    return new Void();
+}
 
 TopEnv['+'] = function(list) {
   var result = 0;
