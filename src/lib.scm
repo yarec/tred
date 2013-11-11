@@ -122,9 +122,10 @@
     (lambda (pred? ls n)
       (if (= n 1) (list (car ls))
           (if (= n 2)
-              (begin (define x (car ls)) (define y (cadr ls))
+              (let ([x (car ls)]
+                    [y (cadr ls)])
                      (if (pred? y x) (list y x) (list x y)))
-              (begin (define i (quotient n 2))
+              (let ([i (quotient n 2)])
                      (domerge pred?
                               (dosort pred? ls i)
                               (dosort pred? (list-tail ls i) (- n i))))))))
@@ -476,8 +477,8 @@
                      (if (vector? y)
                          ((lambda (n)
                             (if (= (vector-length y) n)
-                                ((begin
-                                   (define loop
+                                ((let 
+                                   ([loop
                                      (lambda (i)
                                        ((lambda (eq-len)
                                           (if eq-len
@@ -486,7 +487,7 @@
                                                           (vector-ref y i))
                                                   (loop (+ i 1))
                                                   #f)))
-                                        (= i n))))
+                                        (= i n)))])
                                    loop)
                                  0)
                                 #f))
@@ -514,7 +515,7 @@
     (define set? #f)
     (lambda ()
       (if (not set?)
-          (begin (define x (p))
+          (let ([x (p)])
             (if (not set?)
                 (begin (set! val x)
                        (set! set? #t)))))
@@ -887,11 +888,15 @@
 (define (compiled s)
   (js-invoke (get-prop s "compiled") "toString"))
 (define (compile-lib s)
-  (define lib (parse s))
-  (define (print x) (display x)(display #\;)(newline))
-  (print "var e=TopEnv")
-  (define (print-compiled x) (print (compile x)))
-  (for-each print-compiled lib))
+  (let ([lib (parse s)])
+    (let ([print
+           (lambda (x)
+             (display x)(display #\;)(newline))])
+      (print "var e=TopEnv")
+      (let ([print-compiled
+             (lambda (x)
+               (print (compile x)))])
+        (for-each print-compiled lib)))))
 ;
 (define (server x)
   (js-invoke (js-eval "window.frames.hf") "navigate"
