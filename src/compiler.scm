@@ -284,16 +284,10 @@
 (define (compiled s)
   (js-invoke (get-prop s "compiled") "toString"))
 (define (compile-lib lib)
-  (let ([print
-         (lambda (x)
-           (display x)(display #\;)(newline))])
-    (print "var e=TopEnv")
-    (let ([print-compiled
-           (lambda (x)
-             (print (compile x)))])
-      (for-each print-compiled lib))))
+  (define (print x) (display x)(display #\;)(newline))
+  (define (print-compiled x) (print (compile x)))
+  (for-each print-compiled lib))
 ;
 (define (server x)
   (js-invoke (js-eval "window.frames.hf") "navigate"
     (string-append "servlet/db?s=" (encode (str x)))))
-

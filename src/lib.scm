@@ -106,14 +106,13 @@
       (reverse (cdr lst) (cons (car lst) r))))
 ;
 (define (append l1 . more)
+  (define (append2 l2 m2)
+    (if (null? l1)
+        (apply append l2 m2)
+      (cons (car l1)
+            (apply append (cdr l1) l2 m2))))
   (if (null? more) l1
-    (begin
-      (define l2 (car more))
-      (define m2 (cdr more))
-      (if (null? l1)
-          (apply append l2 m2)
-          (cons (car l1)
-                (apply append (cdr l1) l2 m2))))))
+    (append2 (car more) (cdr more))))
 ;
 (define sort #f)
 (define merge #f)
@@ -246,11 +245,11 @@
     (define (l2 l)
       (if (null? l)
           '()
-          (begin
-            (define a (car l))
-            (if (not (null? a))
-                (begin (set! not-empty #t) (set! a (cdr a))))
-            (cons a (l2 (cdr l))))))
+        ((lambda (a)
+           (if (not (null? a))
+               (begin (set! not-empty #t) (set! a (cdr a))))
+           (cons a (l2 (cdr l))))
+         (car l))))
     (define ll (l2 lst))
     (if not-empty
         (cons (p-each lst templ)
@@ -889,7 +888,6 @@
   (js-invoke (get-prop s "compiled") "toString"))
 (define (compile-lib lib)
   (define (print x) (display x)(display #\;)(newline))
-  (print "var e=TopEnv")
   (define (print-compiled x) (print (compile x)))
   (for-each print-compiled lib))
 ;
@@ -901,18 +899,18 @@
   (if (pair? ex)
       (if (symbol? (car ex))
           (if (eq? (car ex) 'quote)
-            ex
+              ex
             (if (if (eq? (car ex) 'begin)
                     (if (null? (cdr ex)) #f (null? (cddr ex))) #f)
-              (transform (cadr ex))
+                (transform (cadr ex))
               (if (if (eq? (car ex) 'lambda) #t
-                      (if (eq? (car ex) 'define) #t
-                          (eq? (car ex) 'set!)))
+                    (if (eq? (car ex) 'define) #t
+                      (eq? (car ex) 'set!)))
                   (cons (car ex) (cons (cadr ex) (map+ transform (cddr ex))))
-                  (begin
-                    (define x (eval (car ex)))
-                    (if (syntax? x)
-                        (transform (apply (get-prop x "transformer") ex (get-prop x "args")))
-                        (cons (car ex) (map+ transform (cdr ex))))))))
-          (map+ transform ex))
-      ex))
+                ((lambda (x)
+                   (if (syntax? x)
+                       (transform (apply (get-prop x "transformer") ex (get-prop x "args")))
+                     (cons (car ex) (map+ transform (cdr ex)))))
+                 (eval (car ex)))   )))
+        (map+ transform ex))
+    ex))

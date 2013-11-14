@@ -18,7 +18,7 @@ app: tred
 test: tred
 	@node tred t/r5rs_pitfall.scm
 ctest:
-	@node tred -e '(compile-lib (get-file "src/lib.scm"))'
+	@node tred -e '(compile-lib (parse (get-file "src/lib.scm")))'
 
 test-min: tred-min
 	@node tred-min t/r5rs_pitfall.scm
@@ -43,11 +43,14 @@ ${BOOTSTRAP}: ${SDIR}/main.js ${SRC}
 
 ${LIB}: ${BOOTSTRAP} ${SDIR}/lib.scm
 	@echo Building ${LIB}
-	@node ${BOOTSTRAP} -e '(compile-lib (parse (get-file "src/lib/std.scm")))' ${SS} > $@
+	@#node ${BOOTSTRAP} -e '(compile-lib (parse (get-file "src/lib/std.scm")))' ${SS} > $@
+	@#node ${BOOTSTRAP} -e '(compile-lib (parse (get-file "src/compiler.scm")))' ${SS} >> $@
+	@node ${BOOTSTRAP} -e '(compile-lib (parse (get-file "src/lib.scm")))' ${SS} >> $@
 
 tred.js: ${SRC} ${LIB}
 	@cat ${SRC} > $@
 	@echo 'function init() {' >> $@
+	@echo 'var e=TopEnv;' >> $@
 	@cat ${LIB} >> $@
 	@echo '}' >> $@
 tred: tred.js
