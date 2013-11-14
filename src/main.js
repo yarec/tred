@@ -83,6 +83,13 @@ function eval_scm_file(file_){
     var code = fs.readFileSync(file_, 'utf-8');
     return eval_scm(code);
 }
+function readfiles(files_){
+    var code = '';
+    files_.forEach(function(file_){
+        code = fs.readFileSync(file_, 'utf-8')+code;
+    });
+    return code;
+}
 
 function ready(f){
     fs.exists('',f);
@@ -112,7 +119,7 @@ if(ops.exp){
         setopts(ops);
         var code = ops.exp;
         if(ops.args!=undefined){
-            code = fs.readFileSync(ops.args[0], 'utf-8') + code;
+            code = readfiles(ops.args) + code;
         }
         ret = eval_scm(code);
     });
@@ -121,21 +128,13 @@ else if(ops.args==undefined){
     ops.printHelp();
 }
 else{
-    fs.exists(ops.args[0],function(exists){
-        if(exists){
-            if(ops.compile){
-                compile_scm(ops.args[0]);
-            }
-            else{
-                setopts(ops);
-                ret = eval_scm_file(ops.args[0]);
-            }
-    //if(ret.constructor=='Boolean'&& ret && (ret.constructor=='Object' && ret.car!=undefined)){
-    //console.log(ret);
-    //}
+    ready(function(){
+        if(ops.compile){
+            compile_scm(ops.args[0]);
         }
         else{
-            console.log(ops.args['0']+' : not found!');
+            setopts(ops);
+            ret = eval_scm(readfiles(ops.args));
         }
     });
 }

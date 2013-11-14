@@ -32,15 +32,18 @@ Quick Start
 
  repl:
 
-    > 1
-    > "1"
-    > #\1
-    > (+ 1 2)
-    > (+ 1 2 3 4)
-    > (iota 10 1)
-    > (apply + (iota 10 1))
-    > (map (lambda (x) (+ x 1)) (iota 10 1))
-    > (map + (list 1 2 3) (list 4 5 6))
+    > 1                                      => 1
+    > "1"                                    => "1"
+    > #\1                                    => #\1
+    > (+ 1 2)                                => 3
+    > (+ 1 2 3 4)                            => 10
+    > (iota 10 1)                            => (1 2 3 4 5 6 7 8 9 10)
+    > (apply + (iota 10 1))                  => 55
+    > (map (lambda (x) (+ x 1)) (iota 10 1)) => (2 3 4 5 6 7 8 9 10 11)
+    > (map + (list 1 2 3) (list 4 5 6))      => (5 7 9)
+    > '(good morning)                        => (good morning)
+    > `(1 ,(+ 1 1) 3)                        => (1 2 3)
+    > `(1 ,@(map + '(1 3) '(2 4)) 9)         => (1 3 7 9)
 
  compile lib in broswer: 
 

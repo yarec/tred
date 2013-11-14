@@ -9,12 +9,17 @@ SRC_= helper.js \
 	  eval.js \
 	  topenv.js
 SRC=$(foreach i, ${SRC_}, ${SDIR}/${i})
-SSRC=${SDIR}/lib.scm
+SS_OLD=${SDIR}/lib.scm
+SS=${SDIR}/lib/std.scm ${SDIR}/compiler.scm
+SS=${SS_OLD}
 
 # Main Target
 app: tred
 test: tred
 	@node tred t/r5rs_pitfall.scm
+ctest:
+	@node tred -e '(compile-lib (get-file "src/lib.scm"))'
+
 test-min: tred-min
 	@node tred-min t/r5rs_pitfall.scm
 bootstrap: clean ${BOOTSTRAP}
@@ -38,7 +43,7 @@ ${BOOTSTRAP}: ${SDIR}/main.js ${SRC}
 
 ${LIB}: ${BOOTSTRAP} ${SDIR}/lib.scm
 	@echo Building ${LIB}
-	@node ${BOOTSTRAP} -e '(compile-lib (get-file "src/lib.scm"))' ${SSRC} > $@
+	@node ${BOOTSTRAP} -e '(compile-lib (parse (get-file "src/lib/std.scm")))' ${SS} > $@
 
 tred.js: ${SRC} ${LIB}
 	@cat ${SRC} > $@
@@ -48,7 +53,7 @@ tred.js: ${SRC} ${LIB}
 tred: tred.js
 	@echo Building tred
 	@#echo '#!/usr/bin/env node' > $@
-	@cat ${SDIR}/main.js >> $@
+	@cat ${SDIR}/main.js > $@
 	@cat $^ >> $@
 	@chmod +x $@
 release: tred-min tred-min.js
