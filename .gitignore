@@ -1,5 +1,5 @@
 out/
-tred
+*tred*
 node_modules/
 tmp/
 .hg*
