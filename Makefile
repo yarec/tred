@@ -20,13 +20,11 @@ CODE_CLIB=(compile-lib (parse (get-file "src/lib.scm")))
 
 # Func Defs
 define init
-	@echo "function init() {" >> $(1)
-	@echo "var e=TopEnv;"     >> $(1)
-	@if [ "$(2)" = "" ]; then   \
-		cat ${LIB}     >> $(1); \
-		else echo "$(2)" >> $(1); \
-		fi
-	@echo "}"                 >> $(1)
+	@echo "(function() {"                >> $(1)
+	@echo "var e=TopEnv;"                >> $(1)
+	@if [ "$(2)" = "" ]; then cat ${LIB} >> $(1); \
+		else echo "$(2)"                 >> $(1); fi
+	@echo "}());"                        >> $(1)
 endef
 
 define head
@@ -38,9 +36,18 @@ endef
 define reduce
 $(1):$(2)
 	@echo Building $(1)
-	@#uglifyjs $(2) -o $(1)
-	@node_modules/packer/cli.js -b -i $(2) -o $(1)
+	@uglifyjs $(2) -o $(1) -m sort,eval,toplevel -r 'Parser,doEval,isNil' -c unsafe
 	@chmod +x $(1)
+endef
+
+define 3rd-test
+$(1):
+	@make -s clean && env SI=$(1) make -s test
+endef
+
+define 3rd-cp
+	@echo - compiling via $(2)
+	@time $(1) src/tsc.scm > $@
 endef
 
 # Main Target
@@ -57,6 +64,8 @@ petite-test: tred
 	petite --script t/test.nano.ss > out/petite.out
 	node tred t/test.nano.ss > out/tred.out
 	diff out/petite.out out/tred.out
+SIS=pi gsi csi gosh
+$(foreach si,$(SIS),$(eval $(call 3rd-test,$(si))))
 
 bootstrap: clean ${BOOTSTRAP}
 lib: clean ${LIB}
@@ -79,13 +88,15 @@ ifeq ($(SI),nosi)
 	@echo - use bootstrap.js [ ${SS_OLD} ]
 	@node ${BOOTSTRAP} -e '$(CODE_CLIB)' ${SS_OLD} >> $@
 else ifeq ($(SI),pi)
-	@echo - use petite compiling  [ ${SS} ]
-	@petite --script src/tsc.scm > $@
+	$(call 3rd-cp, petite --libdirs src --script, petite)
 else ifeq ($(SI),gsi)
-	@echo - use gambit compiling  [ ${SS} ]
-	@gsi src/tsc.scm > $@
+	$(call 3rd-cp, gsi            , gambit)
+else ifeq ($(SI),gosh)
+	$(call 3rd-cp, gosh -I.       , gauche)
+else ifeq ($(SI),csi)
+	$(call 3rd-cp, csi -s         , chicken)
 else
-	$(error only [pi, gsi] support)
+	$(error only [pi,gsi,gosh,csi] support)
 endif
 
 
@@ -95,10 +106,9 @@ tred.js: ${SRC} ${LIB}
 	$(call init, $@)
 tred: tred.js
 	@echo Building tred
-	@#echo '#!/usr/bin/env node' > $@
 	$(call head, $@)
-	@cat ${SDIR}/main.js >> $@
 	@cat $^              >> $@
+	@cat ${SDIR}/main.js >> $@
 	@chmod +x $@
 release: tred-min.js
 	@echo 'release ok'

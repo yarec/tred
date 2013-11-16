@@ -47,7 +47,7 @@ Quick Start
 
  compile lib in broswer: 
 
-    > (ajax-get "http://softidy.com/tred/lib.scm" c-lib)
+    > (ajax-get "http://softidy.com/tred/lib.scm" (lambda (x) (compile-lib (parse x))))
 
 Todo
 ----

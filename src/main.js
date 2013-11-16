@@ -49,8 +49,6 @@ function parseList(_o, _level){
     //printLog(objectToString(o));
 }
 function eval_scm(code_){
-    init();
-
     var e=TopEnv;
     var  o, res = null,time0=new Date();
     TopParser = new Parser( code_ );
