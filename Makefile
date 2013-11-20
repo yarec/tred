@@ -36,7 +36,7 @@ endef
 define reduce
 $(1):$(2)
 	@echo Building $(1)
-	@uglifyjs $(2) -o $(1) -m sort,eval,toplevel -r 'Parser,doEval,isNil' -c unsafe
+	@uglifyjs $(2) -o $(1) -m sort,eval,toplevel -r 'Parser,doEval,isNil,Str' -c unsafe
 	@chmod +x $(1)
 endef
 
